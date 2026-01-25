@@ -1,0 +1,176 @@
+{
+  "name": "customer reach out $1000",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        -176
+      ],
+      "id": "7a0d5673-4069-46f2-9bb4-ba08f6fb51e9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY",
+          "mode": "list",
+          "cachedResultName": "n8n-new-customers-list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -288,
+        -176
+      ],
+      "id": "0c8bfdc8-c549-4ada-a625-97d429978586",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Total amount'] }}",
+                    "rightValue": 500,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "51439cce-b6fe-4173-b2a8-3f08a6fe9388"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bronze Tier"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9b7e7c07-89ac-4e24-a067-2b11eb51e8be",
+                    "leftValue": "={{ $json['Total amount'] > 500 && $json['Total amount'] <=1000 }}",
+                    "rightValue": 500,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Silver Tier"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5b9bafd4-9eeb-4e6b-bf5d-08b09b3242d0",
+                    "leftValue": "={{ $json['Total amount'] }}",
+                    "rightValue": 1000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Gold Tier"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -192
+      ],
+      "id": "eeb87470-fb75-4246-a2d2-b5cf4525549a",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "a97faf66-7d77-4904-8c8e-afbbd28a13fd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a29e8682f2ad5a6b0a769930d07419c3f6dbbe46bd0b9b9919276752a0bff185"
+  },
+  "id": "wCLkixPywq9k7mXD",
+  "tags": []
+}
