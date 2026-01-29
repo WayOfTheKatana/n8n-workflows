@@ -1,0 +1,292 @@
+{
+  "name": "My workflow 7",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -48
+      ],
+      "id": "47871b72-0610-4425-acb1-d4a9109e978f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY",
+          "mode": "list",
+          "cachedResultName": "n8n-new-customers-list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        -48
+      ],
+      "id": "a3f1ae00-86de-4ebc-abac-7cfafa699878",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "T59z71ld2jPciPQI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/T59z71ld2jPciPQI",
+          "cachedResultName": "Address Verification Workflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        112,
+        -48
+      ],
+      "id": "a1a55776-779a-4714-9996-eb97690a35e2",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY",
+          "mode": "list",
+          "cachedResultName": "n8n-new-customers-list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gUbBVmwrgcmHIn6DrGg0uijLn37eYDFVlb2xtk7G1XY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Index #": "={{ $json['Index #'] }}",
+            "DB Verification": "={{ $json['DB Verification'] }}",
+            "Verification Status": "Order Approved",
+            "Address Verify": "Finished"
+          },
+          "matchingColumns": [
+            "Index #"
+          ],
+          "schema": [
+            {
+              "id": "Index #",
+              "displayName": "Index #",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total amount",
+              "displayName": "Total amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Return customer",
+              "displayName": "Return customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "US Country",
+              "displayName": "US Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "VIP",
+              "displayName": "VIP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address ",
+              "displayName": "Address ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address Verify",
+              "displayName": "Address Verify",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DB Verification",
+              "displayName": "DB Verification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Verification Status",
+              "displayName": "Verification Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        -48
+      ],
+      "id": "efcd68ad-3b35-4bb2-80e7-3b7a997e515b",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "3988e99c-124d-422f-8649-ac367858894f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a29e8682f2ad5a6b0a769930d07419c3f6dbbe46bd0b9b9919276752a0bff185"
+  },
+  "id": "3eEAnB3ZaQUS4QMq",
+  "tags": []
+}
