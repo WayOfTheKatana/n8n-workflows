@@ -1,0 +1,1009 @@
+{
+  "name": "Email Follow up Sequence",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2464,
+        -208
+      ],
+      "id": "811372d6-4b82-435d-8fd1-4bb8a8fb59ae",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI",
+          "mode": "list",
+          "cachedResultName": "Email Followup Sequence",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2240,
+        -208
+      ],
+      "id": "64091176-10fb-44ba-9fee-360eef42c475",
+      "name": "Get Customer Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Users Email'] }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -928,
+        -208
+      ],
+      "id": "95ac9bec-bed9-41ba-a0a2-a4307e0aa8e1",
+      "name": "Send a message",
+      "webhookId": "77d2b27c-4ee4-48bd-84c0-d4acdb2ffda5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "A6fqhDCUt55Se9Op",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write follow-up email {{ $json['followUpNumber:'] }} for:\n\nName: {{ $('Get Customer Data').item.json.Name }}\nCompany: {{ $('Get Customer Data').item.json.Company }}\nGoal: {{ $json.followUpGoal }}\nColumn to Update: {{ $json.columnToUpdate }}\n\nReturn the JSON output only.",
+        "options": {
+          "systemMessage": "=You are an email writer for Shajid from The Owl Logic (theowllogic.com), \na blog focused on n8n automation and workflow development.\n\nShajid recently launched an ebook about n8n automation. The recipient \ndownloaded this ebook and you are writing a follow-up email on his behalf.\n\n## Recipient Details:\n- Name: {{ $('Get Customer Data').item.json.Name }}\n- Company: {{ $('Get Customer Data').item.json.Company }}\n\n## Which Email to Write:\n- Follow Up Number: {{ $json['followUpNumber:'] }}\n- Goal: {{$json.followUpGoal}}\n- Column to Update: {{$json.columnToUpdate}}\n\n## Email Instructions Based on Follow Up Number:\n\nIf followUpNumber = 1:\n- Subject: \"Your n8n Automation Ebook is Ready, {{ $('Get Customer Data').item.json.Name }}\"\n- Goal: Confirm delivery, tell them what's inside, invite questions\n- Tone: Warm welcome, excited but not salesy\n\nIf followUpNumber = 2:\n- Subject: \"Did you get a chance to read it, {{ $('Get Customer Data').item.json.Name }}?\"\n- Goal: Check if they started reading, share ONE specific insight \n  from the ebook to spark curiosity, re-share download link\n- Tone: Casual check-in, friendly nudge\n\nIf followUpNumber = 3:\n- Subject: \"Quick question about the ebook, {{ $('Get Customer Data').item.json.Name }}\"\n- Goal: Ask for one-line feedback, mention you're building more \n  resources and their input shapes what gets built next\n- Tone: Direct, honest, respectful of their time\n\n## Rules for ALL emails:\n- Max 150 words\n- Write in first person as Shajid\n- Conversational, not corporate\n- No emojis\n- No marketing language or hype words\n- No phrases like \"I hope this email finds you well\"\n- Sound like a real person writing to one person\n- End with: \"- Shajid\"\n\n## Output Format:\nReturn ONLY this JSON structure, nothing else:\n\n{\n  \"subject\": \"email subject here\",\n  \"body\": \"email body here\",\n  \"columnToUpdate\": \"{{$json.columnToUpdate}}\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1536,
+        -208
+      ],
+      "id": "f399e6b5-dbcd-48f7-9592-7a9d5c31a95a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-flash-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        0
+      ],
+      "id": "1292c529-46c0-4321-9423-7e1795bdd243",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qPkOIkFhqzHPrAqF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI",
+          "mode": "list",
+          "cachedResultName": "Email Followup Sequence",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Index #": "=",
+            "Follow Up #1": "TRUE",
+            "Users Email": "={{ $('Get Customer Data').item.json['Users Email'] }}"
+          },
+          "matchingColumns": [
+            "Users Email"
+          ],
+          "schema": [
+            {
+              "id": "Index #",
+              "displayName": "Index #",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Users Email",
+              "displayName": "Users Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Initial Status",
+              "displayName": "Initial Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #1",
+              "displayName": "Follow Up #1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #2",
+              "displayName": "Follow Up #2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #3",
+              "displayName": "Follow Up #3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        -384
+      ],
+      "id": "b0bf2683-00bc-4ab1-b30c-743b34fea41b",
+      "name": "Update Follow Up #1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Follow Up #1'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    },
+                    "id": "195fc56d-816b-4751-b3d5-043d9131845c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Follow Up #1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d6385f97-e296-4f7e-ad8a-4e7dd3461980",
+                    "leftValue": "={{ $json['Follow Up #2'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Follow Up #2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c7116d9d-12d8-4504-97dc-bd06fd11f303",
+                    "leftValue": "={{ $json['Follow Up #3'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Follow Up #3"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2048,
+        -224
+      ],
+      "id": "89c2ef82-a019-4e62-b10f-c42577399cbc",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of $input.all()) {\n  // Safety check - skip items without output\n  if (!item.json.output) {\n    results.push({ json: { ...item.json, error: 'No output from AI Agent' } });\n    continue;\n  }\n\n  try {\n    const raw = item.json.output;\n    \n    // Clean markdown code blocks if present\n    const cleaned = raw\n      .replace(/```json\\n?/g, '')\n      .replace(/```\\n?/g, '')\n      .trim();\n\n    const parsed = JSON.parse(cleaned);\n\n    results.push({\n      json: {\n        ...item.json,\n        subject: parsed.subject || 'Follow up from Shajid',\n        body: parsed.body || '',\n        columnToUpdate: parsed.columnToUpdate || item.json.columnToUpdate\n      }\n    });\n\n  } catch (e) {\n    // If JSON parse fails, log which item failed and why\n    results.push({\n      json: {\n        ...item.json,\n        error: `Parse failed: ${e.message}`,\n        rawOutput: item.json.output\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        -208
+      ],
+      "id": "99c72568-65d5-4971-a267-6a3c11d6f66f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "63ee448c-2803-46ee-b702-ded01789d484",
+              "name": "followUpNumber:",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "a5732073-52d6-464a-8924-65dc1e37554e",
+              "name": "followUpGoal",
+              "value": "Confirm they received the ebook and invite questions",
+              "type": "string"
+            },
+            {
+              "id": "1bee2741-ac99-4eb3-8734-7fecf46bbf7c",
+              "name": "columnToUpdate",
+              "value": "Follow Up #1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1808,
+        -368
+      ],
+      "id": "6d641d74-8231-4b5f-ad28-1b1eee88fbbc",
+      "name": "Follow Up #1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a57477de-5d8c-45bc-9f8f-0d9baa1be91f",
+              "name": "followUpNumber",
+              "value": "2",
+              "type": "string"
+            },
+            {
+              "id": "ebd8b86b-f44b-46c3-adef-a94fb83b38d7",
+              "name": "followUpGoal",
+              "value": "Check if they started reading, share one key insight",
+              "type": "string"
+            },
+            {
+              "id": "02db26f4-0676-4a31-ba90-9ca11cd6ff19",
+              "name": "columnToUpdate",
+              "value": "Follow Up #2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1808,
+        -208
+      ],
+      "id": "b658369d-b954-45ac-adab-9fe703edcc26",
+      "name": "Follow Up #2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a6babffb-868a-42f6-a37e-63838be3c887",
+              "name": "followUpNumber",
+              "value": "3",
+              "type": "string"
+            },
+            {
+              "id": "ce778aad-2982-4ef7-bed9-14ce2979633f",
+              "name": "followUpGoal",
+              "value": "Ask for one-line feedback on the ebook",
+              "type": "string"
+            },
+            {
+              "id": "d3ab74b0-2a92-4a4b-b252-fef6bc6040ac",
+              "name": "columnToUpdate",
+              "value": "Follow Up #3",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1808,
+        -32
+      ],
+      "id": "3d24cecd-8686-47ec-b276-e9e82f32fe91",
+      "name": "Follow Up #3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Switch').item.json['Follow Up #1'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    },
+                    "id": "db9481c5-2768-4d88-8d04-8259ad51c627"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "09d99d25-06b8-458b-a457-5fc7a5bc679e",
+                    "leftValue": "={{ $('Switch').item.json['Follow Up #2'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2d024da4-e58c-490c-b3af-f62357c153e4",
+                    "leftValue": "={{ $('Switch').item.json['Follow Up #3'] }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -784,
+        -224
+      ],
+      "id": "9756f3cc-310c-4a38-a52b-058fa7a81ae5",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI",
+          "mode": "list",
+          "cachedResultName": "Email Followup Sequence",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Users Email": "={{ $('Get Customer Data').item.json['Users Email'] }}",
+            "Follow Up #2": "TRUE"
+          },
+          "matchingColumns": [
+            "Users Email"
+          ],
+          "schema": [
+            {
+              "id": "Index #",
+              "displayName": "Index #",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Users Email",
+              "displayName": "Users Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Initial Status",
+              "displayName": "Initial Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #1",
+              "displayName": "Follow Up #1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #2",
+              "displayName": "Follow Up #2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #3",
+              "displayName": "Follow Up #3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        -208
+      ],
+      "id": "fc7b81d9-9b3d-4cab-a49f-fe540e4d0ea7",
+      "name": "Update Follow Up #2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI",
+          "mode": "list",
+          "cachedResultName": "Email Followup Sequence",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QK4sMvOJYykvXld0osRSFN79uT4h7IoDggk5yKgGEwI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Users Email": "={{ $('Get Customer Data').item.json['Users Email'] }}",
+            "Follow Up #2": "",
+            "Follow Up #3": "TRUE"
+          },
+          "matchingColumns": [
+            "Users Email"
+          ],
+          "schema": [
+            {
+              "id": "Index #",
+              "displayName": "Index #",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Users Email",
+              "displayName": "Users Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Initial Status",
+              "displayName": "Initial Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #1",
+              "displayName": "Follow Up #1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #2",
+              "displayName": "Follow Up #2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow Up #3",
+              "displayName": "Follow Up #3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "3776fa81-13ff-4b76-b568-a847867ac026",
+      "name": "Update Follow Up #3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "deh3YdXH6z1tNX5v",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "454e200d-3fcc-4933-8381-a337b7b3c79e",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "string"
+            },
+            {
+              "id": "c4068de0-7cff-4cd9-92e1-0c543f532345",
+              "name": "subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "01e61b0f-c200-4964-b37a-b8a00484f3a6",
+              "name": "Users Email",
+              "value": "={{ $('Get Customer Data').item.json['Users Email'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1120,
+        -208
+      ],
+      "id": "0fd03b89-b8f9-42ed-9a29-5adc2d11947e",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Customer Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Customer Data": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Follow Up #1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow Up #2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow Up #3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up #1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up #2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up #3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Update Follow Up #1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Follow Up #2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Follow Up #3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "16a8fa9b-238b-4517-b7cf-0d328c551a6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a29e8682f2ad5a6b0a769930d07419c3f6dbbe46bd0b9b9919276752a0bff185"
+  },
+  "id": "1TV3zO5j0g7E-EaGDudbS",
+  "tags": []
+}
